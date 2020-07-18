@@ -16,24 +16,14 @@ function showErrorPart(partId, res) {
 
 module.exports = {
     // GET ALL
-    viewData: function (req, res) {
-        const sqlSelectAll = `SELECT * FROM jobs`
-        sails.sendNativeQuery(sqlSelectAll, function (err, rawResult) {
-            let jobs = [];
-            for (let [key, value] of Object.entries(rawResult.rows)) {
-                let job = {};
-                for (let [k, v] of Object.entries(value)) {
-                    job[k] = v;
-                }
-                jobs.push(job);
-            }
-            if (!jobs) {
-                res.send("Cannot find anything to show!")
-            }
-            if (jobs) {
-                res.view("pages/jobs/viewData", { jobs: jobs })
-            }
-        });
+    viewData: async function (req, res) {
+        var jobs = await axios.get("https://bxkvavlzoc.execute-api.us-east-1.amazonaws.com/test/getalljobs");
+        if (!jobs.data) {
+            res.send("Cannot find anything to show!")
+        }
+        if (jobs.data) {
+            res.view("pages/jobs/viewData", { jobs: jobs.data })
+        }
     },
     // GET ONE BY ID
     viewDataByID: async function (req, res) {
@@ -101,55 +91,54 @@ module.exports = {
         }
     },
     // UPDATE DATA
-    updateData: function (req, res) {
+    updateData: async function (req, res) {
         const jobName = req.body.jobName;
         const partId = parseInt(req.body.partId);
         const qty = parseInt(req.body.qty);
 
-        const sqlSelectOne = `SELECT * FROM jobs WHERE jobName = $1 AND partId = $2`;
-        sails.sendNativeQuery(sqlSelectOne, [jobName, partId], async function (err, rawResult) {
-            var length = rawResult.rows.length;
-            if (length != 0) {
-                const sqlUpdate = `UPDATE jobs SET qty = $1 WHERE jobName = $2 AND partId = $3`;
-                await sails.sendNativeQuery(sqlUpdate, [qty, jobName, partId]);
-                res.redirect("/jobs/viewData");
+        const data = { "jobName": jobName, "partId": partId, "qty": qty };
 
-            } else {
-                let code = "400";
-                let message = "jobName: " + jobName + " with " + "partId: " + partId + " do not exist, can't update data";
-                showError(code, message, res);
-            }
-        });
+        var result = await axios.post("https://bxkvavlzoc.execute-api.us-east-1.amazonaws.com/test/updatejob", data)
+            .then(async function (res) {
+                return res;
+            });
+        if (result.data.status == "success") {
+            res.redirect("/jobs/viewData");
+        } else if (result.data.status == "unsuccess") {
+            showError(result.data.code, result.data.message, res);
+        } else {
+            showError(500, "Server Error", res);
+        }
     },
     // DELETE DATA
-    deleteData: function (req, res) {
+    deleteData: async function (req, res) {
         const jobName = req.body.jobName;
         const partId = parseInt(req.body.partId);
 
-        const sqlSelectOne = `SELECT * FROM jobs WHERE jobName = $1 AND partId = $2`;
-        sails.sendNativeQuery(sqlSelectOne, [jobName, partId], async function (err, rawResult) {
-            var length = rawResult.rows.length;
-            if (length != 0) {
-                const sqlDelete = `DELETE FROM jobs WHERE jobName = $1 AND partId = $2`;
-                await sails.sendNativeQuery(sqlDelete, [jobName, partId]);
-                res.redirect("/jobs/viewData");
-            } else {
-                let code = "400";
-                let message = "jobName: " + jobName + " with " + "partId: " + partId + " do not exist, can't delete data";
-                showError(code, message, res);
-            }
-        });
+        const data = { "jobName": jobName, "partId": partId };
+
+        var result = await axios.post("https://bxkvavlzoc.execute-api.us-east-1.amazonaws.com/test/deletejob", data)
+            .then(async function (res) {
+                return res;
+            });
+        if (result.data.status == "success") {
+            res.redirect("/jobs/viewData");
+        } else if (result.data.status == "unsuccess") {
+            showError(result.data.code, result.data.message, res);
+        } else {
+            showError(500, "Server Error", res);
+        }
     },
 
     getAllJobs: async function (req, res) {
-        
+
         // retrieve jobs from aws lambda function
         var result = await axios.get("https://t7zduvjvc2.execute-api.us-east-1.amazonaws.com/test/getalljobs")
             .then(async function (result) {
 
                 return result;
             });
-        
+
         console.log(result["data"])
 
         return res.json(result["data"]);
@@ -164,14 +153,14 @@ module.exports = {
 
                 return result;
             });
-        
+
         console.log(result["data"])
 
         return res.json(result["data"]);
     },
 
     getOneJobp: async function (req, res) {
-        
+
         let queryParam = req.params.jobName;
         // retrieve jobs from aws lambda function
         var result = await axios.get("https://t7zduvjvc2.execute-api.us-east-1.amazonaws.com/test/getonejobp?jobName=" + queryParam)
@@ -179,7 +168,7 @@ module.exports = {
 
                 return result;
             });
-        
+
         //console.log(result["data"])
 
         return res.json(result["data"]);
