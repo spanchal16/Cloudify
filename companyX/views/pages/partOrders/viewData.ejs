@@ -1,0 +1,45 @@
+<style>
+    table,
+    th,
+    td {
+        padding: 10px;
+        border: 1px solid black;
+        border-collapse: collapse;
+    }
+</style>
+
+<body>
+    <h1> View Data of PartOrdersX Table</h1>
+    <br>
+    <table>
+        <thread>
+            <tr>
+                <th> Job Name </th>
+                <th> Part ID </th>
+                <th> User ID </th>
+                <th> Quantity </th>
+            </tr>
+        </thread>
+        <tbody>
+            <% orders.forEach(function(order){ %>
+            <tr>
+                <td> <%= order.jobName %> </td>
+                <td> <%= order.partId %> </td>
+                <td> <%= order.userId %> </td>
+                <td> <%= order.qty %> </td>
+            </tr>
+            <% }) %>
+        </tbody>
+    </table>
+</body>
+<br>
+<form action="/">
+    <button> Home </button>
+</form>
+<br>
+<form action="/partOrders/viewDataByID" method="GET">
+    <input type="text" , name="jobName" , placeholder="Enter job name" , required>
+    <input type="number" , name="partId" , placeholder="Enter part ID" , required>
+    <input type="number" , name="userId" , placeholder="Enter user ID" , required>
+    <button> View Data by ID </button>
+</form>

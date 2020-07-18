@@ -1,0 +1,12 @@
+<style>
+    h1,
+    p {
+        text-align: center;
+    }
+</style>
+
+
+<% if (error) { %>
+    <h1>Error Code: <%= error.code %></h1>
+    <p><%= error.message %></p>
+<% } %>

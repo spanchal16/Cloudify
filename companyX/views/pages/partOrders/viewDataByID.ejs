@@ -1,0 +1,39 @@
+<style>
+    table,
+    th,
+    td {
+        padding: 10px;
+        border: 1px solid black;
+        border-collapse: collapse;
+    }
+</style>
+
+<body>
+    <h1> View Data By ID of PartOrdersX Table </h1>
+    <br>
+    <table>
+        <thread>
+            <tr>
+                <th> Job Name </th>
+                <th> Part ID </th>
+                <th> User ID </th>
+                <th> Quantity </th>
+            </tr>
+        </thread>
+        <tbody>
+            <tr>
+                <% Object.keys(order).forEach(function(key) { %>
+                <td> <%= order[key] %> </td>
+                <% }) %>
+            </tr>
+        </tbody>
+    </table>
+</body>
+<br>
+<form action="/">
+    <button> Home </button>
+</form>
+<br>
+<form action="/partOrders/viewData">
+    <button> View Data </button>
+</form>

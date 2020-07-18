@@ -1,0 +1,54 @@
+<style>
+    table,
+    th,
+    td {
+        padding: 10px;
+        border: 1px solid black;
+        border-collapse: collapse;
+    }
+</style>
+
+<body>
+    <h1> View Data for Jobs Table</h1>
+    <br>
+    <table>
+        <thread>
+            <tr>
+                <th> Job Name </th>
+                <th> Part ID </th>
+                <th> Quantity </th>
+            </tr>
+        </thread>
+        <tbody>
+            <% jobs.forEach(function(job){ %>
+            <tr>
+                <td> <%= job.jobName %> </td>
+                <td> <%= job.partId %> </td>
+                <td> <%= job.qty %> </td>
+            </tr>
+            <% }) %>
+        </tbody>
+    </table>
+</body>
+<br>
+<form action="/">
+    <button> Home </button>
+</form>
+<br>
+<form action="/jobs/viewDataByID" method="GET">
+    <input type="text" , name="jobName" , placeholder="Enter job name" , required>
+    <input type="number" , name="partId" , placeholder="Enter part ID" , required>
+    <button> View Data by ID </button>
+</form>
+<br>
+<form action="/jobs/addData">
+    <button> Add Data </button>
+</form>
+<br>
+<form action="/jobs/updateData">
+    <button> Update Data </button>
+</form>
+<br>
+<form action="/jobs/deleteData">
+    <button> Delete Data </button>
+</form>

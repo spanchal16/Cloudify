@@ -1,0 +1,56 @@
+<style>
+  table,
+  th,
+  td {
+      padding: 10px;
+      border: 1px solid black;
+      border-collapse: collapse;
+  }
+</style>
+
+<h1> Company X <h1>
+  <table>
+    <tr>
+      <th>Jobs Table</th>
+      <th>PartOrdersX Table</th>
+    </tr>
+    <tr>
+      <td>
+        <form action="/jobs/viewData"> <button> View All Data </button> </form>
+        <form action="/jobs/viewDataByID" method="GET"> 
+          <input type="text" , name="jobName" , placeholder="Enter job name", required> 
+          <input type="number" , name="partId" , placeholder="Enter part ID" , required> 
+          <button> View Data by ID </button> 
+        </form>
+        <form action="/jobs/addData"> 
+          <button> Add Data </button> 
+        </form>
+        <form action="/jobs/updateData"> 
+          <button> Update Data </button> 
+        </form>
+        <form action="/jobs/deleteData">
+          <button> Delete Data </button> 
+        </form>
+      </td>
+      <td>
+        <form action="/partOrders/viewData"> 
+          <button> View All Data </button> 
+        </form>
+        <form action="/partOrders/viewDataByID" method="GET"> 
+          <input type="text" , name="jobName" , placeholder="Enter job name", required> 
+          <input type="number" , name="partId" , placeholder="Enter part ID" , required> 
+          <input type="number" , name="userId" , placeholder="Enter user ID" , required> 
+          <button> View Data by ID </button> 
+        </form>
+        <!-- <form action="/partOrders/addData"> 
+          <button> Add Data </button> 
+        </form>
+        <form action="/partOrders/updateData"> 
+          <button> Update Data </button> 
+        </form>
+        <form action="/partOrders/deleteData"> 
+          <button> Delete Data </button> 
+        </form> -->
+      </td>
+    </tr>
+  </table>
