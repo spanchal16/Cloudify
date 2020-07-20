@@ -14,6 +14,18 @@ function showError(code, message, res) {
 //     showError(code, message, res);
 // }
 
+function showErrorInvalidInt(res) {
+    let code = "400";
+    let message = "Invalid Input";
+    showError(code, message, res);
+}
+
+const maxInt = 2147483647;
+// validate integer
+function validInt(number) {
+    return !isNaN(number) && parseInt(number) < maxInt && parseInt(number) > 0 && number % 1 == 0;
+}
+
 module.exports = {
     // GET ALL
     viewData: function (req, res) {
@@ -40,24 +52,30 @@ module.exports = {
         const jobName = req.param('jobName');
         const partId = parseInt(req.param('partId'));
         const userId = parseInt(req.param('userId'));
-        const sqlSelectOne = `SELECT * FROM partOrdersX WHERE jobName = $1 AND partId = $2 AND userId = $3`;
 
-        await sails.sendNativeQuery(sqlSelectOne, [jobName, partId, userId], function (err, rawResult) {
-            var length = rawResult.rows.length;
-            if (length == 0) {
-                let code = "400";
-                let message = "jobName: " + jobName + " with " + "partId: " + partId + " with " + "userId: " + userId + " do not exist, can't retrieve data.";
-                showError(code, message, res);
-            } else {
-                var order = {};
-                for (let [key, value] of Object.entries(rawResult.rows)) {
-                    for (let [k, v] of Object.entries(value)) {
-                        order[k] = v;
+        if (validInt(partId) && validInt(userId)) {
+            const sqlSelectOne = `SELECT * FROM partOrdersX WHERE jobName = $1 AND partId = $2 AND userId = $3`;
+
+            await sails.sendNativeQuery(sqlSelectOne, [jobName, partId, userId], function (err, rawResult) {
+                var length = rawResult.rows.length;
+                if (length == 0) {
+                    let code = "400";
+                    let message = "jobName: " + jobName + " with " + "partId: " + partId + " with " + "userId: " + userId + " do not exist, can't retrieve data.";
+                    showError(code, message, res);
+                } else {
+                    var order = {};
+                    for (let [key, value] of Object.entries(rawResult.rows)) {
+                        for (let [k, v] of Object.entries(value)) {
+                            order[k] = v;
+                        }
                     }
+                    res.view("pages/partOrders/viewDataByID", { order: order });
                 }
-                res.view("pages/partOrders/viewDataByID", { order: order });
-            }
-        });
+            });
+        } else {
+            showErrorInvalidInt(res);
+        }
+
     },
 
     // ADD DATA
@@ -75,13 +93,13 @@ module.exports = {
                 qty: parseInt(req.body.qty)
             }
         })
-        .then(function (response) {
-            //console.log(response);
-            return res.json(response["data"]);
-        })
-        .catch(function (error) {
-            return res.json({status: 'unsuccess'});
-        });
+            .then(function (response) {
+                //console.log(response);
+                return res.json(response["data"]);
+            })
+            .catch(function (error) {
+                return res.json({ status: 'unsuccess' });
+            });
 
 
     },
