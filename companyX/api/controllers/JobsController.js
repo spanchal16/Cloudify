@@ -90,19 +90,19 @@ module.exports = {
             for (var i = 0; i < allPartId.length; i++) {
                 // if part exists in company Y
                 if (partId == allPartId[i]) {
-                    const sqlSelectOne = `SELECT * FROM jobs WHERE jobName = $1 AND partId = $2`;
-                    await sails.sendNativeQuery(sqlSelectOne, [jobName, partId], async function (err, rawResult) {
-                        var length = rawResult.rows.length;
-                        if (length != 0) {
-                            let code = "400";
-                            let message = "jobName: " + jobName + " with " + "partId: " + partId + " already exist, can't add data";
-                            showError(code, message, res);
-                        } else {
-                            const sqlInsert = `INSERT INTO jobs VALUES ($1, $2, $3)`;
-                            await sails.sendNativeQuery(sqlInsert, [jobName, partId, qty]);
-                            res.redirect("/jobs/viewData");
-                        }
-                    });
+                    const data = { "jobName": jobName, "partId": partId, "qty": qty };
+
+                    var result = await axios.post("https://7grapljs2j.execute-api.us-east-1.amazonaws.com/Dev/adddata", data)
+                        .then(async function (res) {
+                            return res;
+                        });
+                    if (result.data.status == "success") {
+                        res.redirect("/jobs/viewData");
+                    } else if (result.data.status == "unsuccess") {
+                        showError(result.data.code, result.data.message, res);
+                    } else {
+                        showError(500, "Server Error", res);
+                    }
                     break;
                 }
                 // if no part found
