@@ -43,24 +43,28 @@ module.exports = {
         const partId = parseInt(req.param('partId'));
 
         if (validInt(partId)) {
-            const sqlSelectOne = `SELECT * FROM jobs WHERE jobName = $1 AND partId = $2`;
+            // https://7grapljs2j.execute-api.us-east-1.amazonaws.com/Dev/getbyid?jobName=job1&partId=2
+            // retrieve jobs from aws lambda function
+            var result = await axios.get("https://7grapljs2j.execute-api.us-east-1.amazonaws.com/Dev/getbyid?jobName=" + jobName +"&partId=" + partId)
+                .then(async function (rawResult) {
 
-            await sails.sendNativeQuery(sqlSelectOne, [jobName, partId], function (err, rawResult) {
-                var length = rawResult.rows.length;
-                if (length == 0) {
-                    let code = "400";
-                    let message = "jobName: " + jobName + " with " + "partId: " + partId + " do not exist, can't retrieve data.";
-                    showError(code, message, res);
-                } else {
-                    var job = {};
-                    for (let [key, value] of Object.entries(rawResult.rows)) {
-                        for (let [k, v] of Object.entries(value)) {
-                            job[k] = v;
-                        }
+                    if (!rawResult.data) {
+                        let code = "400";
+                        let message = "jobName: " + jobName + " with " + "partId: " + partId + " do not exist, can't retrieve data.";
+                        showError(code, message, res);
                     }
-                    res.view("pages/jobs/viewDataByID", { job: job });
-                }
-            });
+                    if (rawResult.data) {
+                        console.log(rawResult.data)
+                        var job = {};
+                        for (let [key, value] of Object.entries(rawResult.data)) {
+                            for (let [k, v] of Object.entries(value)) {
+                                job[k] = v;
+                            }
+                        }
+                        res.view("pages/jobs/viewDataByID", { job: job });
+                    }
+                });
+
         } else {
             showErrorInvalidInt(res);
         }
