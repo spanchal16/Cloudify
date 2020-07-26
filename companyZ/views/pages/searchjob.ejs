@@ -1,0 +1,47 @@
+<div class="mb-3" style="margin-top: 27vh; overflow: auto;">
+    <div class="col-sm-6 col-md-6 col-lg-8 mx-auto" style="height: 59vh;">
+      <center><h3>Search Job</h1></center>
+  
+      <div class="card border-dark">
+        <div class="card-body">
+          <form class="needs-validation" method="POST" action="/searchjob">
+            <label for="lblpartid">Job Name</label>
+            <input
+              class="form-control"
+              name="txtjobname"
+              placeholder="Enter Job Name"
+              required
+            />
+  
+            <br />
+  
+            <button class="btn btn-primary" type="submit">Search</button>
+          </form>
+        </div>
+      </div>
+  
+      <br />
+  
+      <% if (typeof jobs != 'undefined'){ if (jobs == null || jobs.data[0] == null) { %>
+  
+      <div class="card border-danger bg-danger">
+        <div class="card-body mx-auto">
+          <p class="card-text text-white">
+            No such data is available in database.
+          </p>
+        </div>
+      </div>
+  
+      <% } else { %>
+  
+      <div class="card border-success bg-success">
+        <div class="card-body mx-auto">
+          <p class="card-text text-white">
+            Job with name <%= jobs.data[0].jobName %> found! <a href="/viewJob/<%= jobs.data[0].jobName %>" class="btn btn-primary">View</a>
+          </p>
+        </div>
+      </div>
+      <% } }%>  
+    </div>  
+  </div>
+  

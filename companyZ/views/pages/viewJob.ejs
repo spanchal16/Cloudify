@@ -1,0 +1,28 @@
+
+<div class="mb-3" style="margin-top: 27vh; overflow: auto;">
+    <div class="col-sm-6 col-md-6 col-lg-8 mx-auto" style="height: 39vh;">
+      <table class="table table-bordered">
+        <thead class="table-dark">
+          <tr>
+            <th scope="col">Job Name</th>
+            <th scope="col">Part Id</th>
+            <th scope="col">Quantity</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tbody>
+  
+            <% jobs.data.forEach(function(job){ %>
+              <tr>
+              <td> <%= job.jobName %> </td>
+              <td> <%= job.partId %> </td>
+              <td> <%= job.qty %> </td>
+              </tr>
+              <% }) %>
+            
+        </tbody>
+      </table>
+      <a href="/authenticateUser/<%= jobs.data[0].jobName %>" class="btn btn-primary">Authenticate & Order</a>
+    </div>
+  </div>
+  

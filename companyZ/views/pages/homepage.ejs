@@ -1,0 +1,25 @@
+
+<div class="mb-3" style="margin-top: 27vh; overflow: auto;">
+  <div class="col-sm-6 col-md-6 col-lg-8 mx-auto" style="height: 39vh;">
+    <table class="table table-bordered">
+      <thead class="table-dark">
+        <tr>
+          <th scope="col">Job Name</th>
+          <th scope="col">View Job</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tbody>
+
+          <% jobs.data.forEach(function(job){ %>
+            <tr>
+            <td> <%= job.jobName %> </td>
+            <td><a href="/viewJob/<%= job.jobName %>" class="btn btn-primary">View</a></td>
+            </tr>
+            <% }) %>
+          
+      </tbody>
+    </table>
+
+  </div>
+</div>

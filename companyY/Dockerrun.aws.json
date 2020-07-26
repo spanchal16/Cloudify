@@ -1,0 +1,11 @@
+{
+  "AWSEBDockerrunVersion": "1",
+  "Image": {
+    "Name": "ddalwadi38/assignment6"
+  },
+  "Ports": [
+    {
+      "ContainerPort": "1337"
+    }
+  ]
+}

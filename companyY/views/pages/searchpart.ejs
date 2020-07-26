@@ -1,0 +1,51 @@
+<!-- Searching a part -->
+<div class="mb-3" style="margin-top: 27vh; overflow: auto;">
+  <div class="col-sm-6 col-md-6 col-lg-8 mx-auto" style="height: 59vh;">
+    <center><h3>Search Part</h1></center>
+
+    <div class="card border-dark">
+      <div class="card-body">
+        <form class="needs-validation" method="POST" action="/searchpart">
+          <label for="lblpartid">Part ID</label>
+          <input
+            type="number"
+            class="form-control"
+            name="txtpartid"
+            placeholder="Enter Part ID"
+            min="0"
+            step="1"
+            required
+          />
+
+          <br />
+
+          <button class="btn btn-primary" type="submit">Search</button>
+        </form>
+      </div>
+    </div>
+
+    <br />
+
+    <% if (typeof parts != 'undefined'){ if (parts == null) { %>
+
+    <div class="card border-danger bg-danger">
+      <div class="card-body mx-auto">
+        <p class="card-text text-white">
+          No such data is available in database.
+        </p>
+      </div>
+    </div>
+
+    <% } else { %>
+
+    <div class="card border-success bg-success">
+      <div class="card-body mx-auto">
+        <p class="card-text text-white">
+          Part ID = <%= parts.partId %>, Part Name = <%= parts.partName %>,
+          Quantity = <%= parts.qoh %>
+        </p>
+      </div>
+    </div>
+    <% } }%>
+  </div>
+</div>

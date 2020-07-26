@@ -1,0 +1,20 @@
+<div class="mb-3" style="margin-top: 27vh; overflow: auto;">
+    <div class="col-sm-6 col-md-6 col-lg-8 mx-auto" style="height: 39vh;">
+
+        <h1>Authentication Page</h1>
+        <br />
+            <form class="needs-validation" method="POST" action="/authenticateUser">
+                <div class="form-group">
+                   
+                    <label for="username">Username *</label>
+                    <input type="number" class="form-control" name="username" placeholder="Enter your Username">
+            
+                    <label for="password">Password *</label>
+                    <input type="password" class="form-control" name="password" placeholder="Enter your Password">
+                <br />
+                <input name="jobName" type = "hidden" value= <%= jName %> >
+                <button class="btn btn-primary" type="submit">Authenticate</button>
+            </div>
+            </form>
+    </div>
+</div>

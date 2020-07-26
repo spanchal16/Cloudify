@@ -1,0 +1,30 @@
+<!-- Displaying all parts -->
+
+<div class="mb-3" style="margin-top: 27vh; overflow: auto;">
+  <div class="col-sm-6 col-md-6 col-lg-8 mx-auto" style="height: 59vh;">
+    <table class="table table-bordered">
+      <thead class="table-dark">
+        <tr>
+          <th scope="col">PartId</th>
+          <th scope="col">PartName</th>
+          <th scope="col">QOH</th>
+          <th scope="col">Edit</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% parts.forEach(function(part){ %>
+        <tr>
+          <td><%= part.partId %></td>
+          <td><%= part.partName %></td>
+          <td><%= part.qoh %></td>
+          <td>
+            <a href="/editpart/<%= part.partId %>" class="btn btn-primary"
+              >Edit</a
+            >
+          </td>
+        </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+</div>
