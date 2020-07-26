@@ -9,7 +9,7 @@ module.exports = {
         "https://c8yyanelhf.execute-api.us-east-1.amazonaws.com/production/getpartorders",
     })
       .then((response) => {
-        if (!response.data.message) {
+        if (response.status === 200) {
           return res.view("pages/orderedparts", { partOrders: response.data });
         } else {
           return res.view("error", { err: response.data });
@@ -21,7 +21,7 @@ module.exports = {
   },
 
   //Add new parts ordered using (API)
-  addList: function (req, res) {
+  addList: async function (req, res) {
     const url = require("url");
     const custom_url = new URL(
       req.protocol + "://" + req.get("host") + req.originalUrl
@@ -51,17 +51,19 @@ module.exports = {
         message: "Please enter proper parameter",
       });
     } else {
-      PartOrdersY.create({
-        id: req.query.jobname,
-        partId: req.query.partid,
-        userId: req.query.userid,
-        qty: req.query.qty,
+      await axios({
+        method: "post",
+        url: `https://c8yyanelhf.execute-api.us-east-1.amazonaws.com/production/addorders?jobname=${req.query.jobname}&partid=${req.query.partid}&userid=${req.query.userid}&qty=${req.query.qty}`,
       })
-        .then(function () {
-          return res.ok();
+        .then((response) => {
+          if (response.status === 200) {
+            return res.ok();
+          } else {
+            return res.view("error", { err: response.data });
+          }
         })
-        .catch(function (err) {
-          return res.send(500, { error: `Something Went Wrong!\n${err}` });
+        .catch((err) => {
+          return res.view("error", { err: err });
         });
     }
   },

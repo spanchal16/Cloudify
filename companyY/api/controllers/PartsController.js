@@ -9,7 +9,7 @@ module.exports = {
         "https://c8yyanelhf.execute-api.us-east-1.amazonaws.com/production/listparts",
     })
       .then((response) => {
-        if (!response.data.message) {
+        if (response.status === 200) {
           return res.view("pages/homepage", { parts: response.data });
         } else {
           return res.view("error", { err: response.data });
@@ -21,16 +21,20 @@ module.exports = {
   },
 
   //To create new part
-  create: function (req, res) {
-    Parts.create({
-      id: req.body.txtpartid,
-      partName: req.body.txtpartname,
-      qoh: req.body.txtqoh,
+  create: async function (req, res) {
+    await axios({
+      method: "post",
+      url: `https://c8yyanelhf.execute-api.us-east-1.amazonaws.com/production/addpart?partid=${req.body.txtpartid}&partname=${req.body.txtpartname}&qoh=${req.body.txtqoh}`,
     })
-      .then(function () {
-        return res.redirect("/");
+      .then((response) => {
+        console.log(response);
+        if (response.status === 200) {
+          return res.redirect("/");
+        } else {
+          return res.view("error", { err: response.data });
+        }
       })
-      .catch(function (err) {
+      .catch((err) => {
         return res.view("error", { err: err });
       });
   },
@@ -38,7 +42,7 @@ module.exports = {
   //To fetch existing part
   editpart: function (req, res) {
     Parts.findOne({
-      id: req.params.partId,
+      id: req.params.partid,
     })
       .then(function (parts) {
         return res.view("pages/editpart", { parts: parts });
@@ -92,7 +96,7 @@ module.exports = {
         "https://c8yyanelhf.execute-api.us-east-1.amazonaws.com/production/listparts",
     })
       .then((response) => {
-        if (!response.data.message) {
+        if (response.status === 200) {
           return res.status(200).json(response.data);
         } else {
           return res.send(500, { error: response.data });
@@ -151,7 +155,7 @@ module.exports = {
       url: `https://c8yyanelhf.execute-api.us-east-1.amazonaws.com/production/getpart?partid=${req.params.partid}`,
     })
       .then((response) => {
-        if (!response.data.message) {
+        if (response.status === 200) {
           return res.status(200).json(response.data);
         } else {
           return res.send(500, { error: response.data });

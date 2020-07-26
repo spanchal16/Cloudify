@@ -11,7 +11,7 @@ module.exports.routes = {
   "POST /addpart": PartsController.create,
 
   //Edit particular part using partId (UI)
-  "GET /editpart/:partId": PartsController.editpart,
+  "GET /editpart/:partid": PartsController.editpart,
   "POST /editpart": PartsController.update,
 
   //Search particular part using partId (UI)
@@ -29,7 +29,7 @@ module.exports.routes = {
   "POST /api/editpart": PartsController.edit,
 
   //Search particular part using (API)
-  "GET /api/part/:partId": PartsController.searchPart,
+  "GET /api/part/:partid": PartsController.searchPart,
 
   //Add new partsorder entry using (API)
   "POST /api/addorders": PartOrdersYController.addList,

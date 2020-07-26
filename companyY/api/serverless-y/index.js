@@ -83,5 +83,97 @@ app.get("/getpartorders", (req, res) => {
     });
 });
 
+//Add specific part
+app.post("/addpart", (req, res) => {
+  const custom_url = new URL(
+    req.protocol + "://" + req.get("host") + req.originalUrl
+  );
+  const search_param = custom_url.searchParams;
+  if (JSON.stringify(req.query) === "{}") {
+    res.status(404).json({
+      message: "Please enter proper parameter",
+    });
+  } else if (
+    search_param.has("partid") === false ||
+    search_param.has("partname") === false ||
+    search_param.has("qoh") === false
+  ) {
+    res.status(404).json({
+      message: "Please enter proper parameter",
+    });
+  } else if (
+    req.query.partid === "" ||
+    req.query.partname === "" ||
+    req.query.qoh === ""
+  ) {
+    res.status(404).json({
+      message: "Please enter proper parameter",
+    });
+  } else {
+    sequelize
+      .query(
+        `insert into parts values(${req.query.partid},'${req.query.partname}','${req.query.qoh}');`
+      )
+      .then((result) => {
+        res.status(200).json({
+          message: "New Part Added Successfully",
+        });
+      })
+      .catch((err) => {
+        res.status(400).json({
+          message: `Something Went Wrong \n ${err}`,
+        });
+        console.log(err);
+      });
+  }
+});
+
+//Add PartOrders
+app.post("/addorders", (req, res) => {
+  const custom_url = new URL(
+    req.protocol + "://" + req.get("host") + req.originalUrl
+  );
+  const search_param = custom_url.searchParams;
+  if (JSON.stringify(req.query) === "{}") {
+    res.status(404).json({
+      message: "Please enter proper parameter",
+    });
+  } else if (
+    search_param.has("jobname") === false ||
+    search_param.has("partid") === false ||
+    search_param.has("userid") === false ||
+    search_param.has("qty") === false
+  ) {
+    res.status(404).json({
+      message: "Please enter proper parameter",
+    });
+  } else if (
+    req.query.jobname === "" ||
+    req.query.partid === "" ||
+    req.query.userid === "" ||
+    req.query.qty === ""
+  ) {
+    res.status(404).json({
+      message: "Please enter proper parameter",
+    });
+  } else {
+    sequelize
+      .query(
+        `insert into partOrdersY values('${req.query.jobname}',${req.query.partid},${req.query.userid},${req.query.qty});`
+      )
+      .then((result) => {
+        res.status(200).json({
+          message: "PartOrder Added Successfully",
+        });
+      })
+      .catch((err) => {
+        res.status(400).json({
+          message: `Something Went Wrong \n ${err}`,
+        });
+        console.log(err);
+      });
+  }
+});
+
 //app.listen(3000, () => console.log(`Listening to port 3000...`));
 module.exports.handler = sls(app);
