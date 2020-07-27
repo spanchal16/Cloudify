@@ -39,54 +39,65 @@ module.exports = {
       });
   },
 
-  //To fetch existing part
-  editpart: function (req, res) {
-    Parts.findOne({
-      id: req.params.partid,
-    })
-      .then(function (parts) {
-        return res.view("pages/editpart", { parts: parts });
+    //To fetch existing part
+    editpart: async function (req, res) {
+      await axios({
+        method: "get",
+        url: `https://c8yyanelhf.execute-api.us-east-1.amazonaws.com/production/getpart?partid=${req.params.partid}`,
       })
-      .catch(function (err) {
-        return res.view("error", { err: err });
-      });
-  },
-
-  //To update part
-  update: function (req, res) {
-    Parts.update(
-      {
-        id: req.body.txtpartid,
-      },
-      {
-        partName: req.body.txtpartname,
-        qoh: req.body.txtqoh,
-      }
-    )
-      .then(function () {
-        res.redirect("/");
+        .then((response) => {
+          console.log(response);
+          if (response.status === 200) {
+            return res.view("pages/editpart", { parts: response.data[0] });
+          } else {
+            return res.send(500, { error: response.data });
+          }
+        })
+        .catch((err) => {
+          return res.send(500, { error: `Something Went Wrong!\n${err}` });
+        });
+    },
+  
+    //To update part
+    update: async function (req, res) {
+      await axios({
+        method: "post",
+        url: `https://c8yyanelhf.execute-api.us-east-1.amazonaws.com/production/editpart?partid=${req.body.txtpartid}&partname=${req.body.txtpartname}&qoh=${req.body.txtqoh}`,
       })
-      .catch(function (err) {
-        return res.view("error", { err: err });
-      });
-  },
-
-  //To search part
-  search: function (req, res) {
-    Parts.findOne({
-      id: req.body.txtpartid,
-    })
-      .then(function (parts) {
-        if (!parts) {
-          return res.view("pages/searchpart", { parts: null });
-        } else {
-          return res.view("pages/searchpart", { parts: parts });
-        }
+        .then((response) => {
+          if (response.status === 200) {
+            res.redirect("/");
+          } else {
+            return res.send(500, { error: response.data });
+          }
+        })
+        .catch((err) => {
+          return res.send(500, { error: `Something Went Wrong!\n${err}` });
+        });
+    },
+  
+    //To search part
+    search: async function (req, res) {
+      await axios({
+        method: "get",
+        url: `https://c8yyanelhf.execute-api.us-east-1.amazonaws.com/production/getpart?partid=${req.body.txtpartid}`,
       })
-      .catch(function (err) {
-        return res.view("error", { err: err });
-      });
-  },
+        .then((response) => {
+          console.log(response);
+          if (response.status === 200) {
+            if (response.data.length !== 0) {
+              return res.view("pages/searchpart", { parts: response.data[0] });
+            } else {
+              return res.view("pages/searchpart", { parts: null });
+            }
+          } else {
+            return res.send(500, { error: response.data });
+          }
+        })
+        .catch((err) => {
+          return res.send(500, { error: `Something Went Wrong!\n${err}` });
+        });
+    },
 
   //To list all parts using (API)
   listAllParts: async function (req, res) {
@@ -108,7 +119,7 @@ module.exports = {
   },
 
   //Edit particular part using (API)
-  edit: function (req, res) {
+  edit: async function (req, res) {
     const url = require("url");
     const custom_url = new URL(
       req.protocol + "://" + req.get("host") + req.originalUrl
@@ -131,22 +142,23 @@ module.exports = {
         message: "Please enter proper parameter",
       });
     } else {
-      Parts.update(
-        {
-          id: req.query.partid,
-        },
-        {
-          qoh: req.query.qoh,
-        }
-      )
-        .then(function () {
-          return res.ok();
+      await axios({
+        method: "post",
+        url: `https://c8yyanelhf.execute-api.us-east-1.amazonaws.com/production/editpart?partid=${req.query.partid}&qoh=${req.query.qoh}`,
+      })
+        .then((response) => {
+          if (response.status === 200) {
+            res.redirect("/");
+          } else {
+            return res.send(500, { error: response.data });
+          }
         })
-        .catch(function (err) {
+        .catch((err) => {
           return res.send(500, { error: `Something Went Wrong!\n${err}` });
         });
     }
   },
+
 
   //Search particular part using (API)
   searchPart: async function (req, res) {

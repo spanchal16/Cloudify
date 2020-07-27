@@ -175,5 +175,80 @@ app.post("/addorders", (req, res) => {
   }
 });
 
+//Edit specific part
+app.post("/editpart", (req, res) => {
+  const custom_url = new URL(
+    req.protocol + "://" + req.get("host") + req.originalUrl
+  );
+  const search_param = custom_url.searchParams;
+  if (JSON.stringify(req.query) === "{}") {
+    res.status(404).json({
+      message: "Please enter proper parameter",
+    });
+  } else if (search_param.has("partname")) {
+    if (
+      search_param.has("qoh") === false ||
+      search_param.has("partid") === false
+    ) {
+      res.status(404).json({
+        message: "Please enter proper parameter",
+      });
+    } else if (
+      req.query.partid === "" ||
+      req.query.qoh === "" ||
+      req.query.partname === ""
+    ) {
+      res.status(404).json({
+        message: "Please enter proper parameter",
+      });
+    } else {
+      sequelize
+        .query(
+          `update parts set partName='${req.query.partname}', qoh='${req.query.qoh}' where partId=${req.query.partid};`
+        )
+        .then((result) => {
+          res.status(200).json({
+            message: "Successfully Updated",
+          });
+        })
+        .catch((err) => {
+          res.status(400).json({
+            message: `Something Went Wrong \n ${err}`,
+          });
+          console.log(err);
+        });
+    }
+  } else {
+    if (
+      search_param.has("partid") === false ||
+      search_param.has("qoh") === false
+    ) {
+      res.status(404).json({
+        message: "Please enter proper parameter",
+      });
+    } else if (req.query.partid === "" || req.query.qoh === "") {
+      res.status(404).json({
+        message: "Please enter proper parameter",
+      });
+    } else {
+      sequelize
+        .query(
+          `update parts set qoh='${req.query.qoh}' where partId=${req.query.partid};`
+        )
+        .then((result) => {
+          res.status(200).json({
+            message: "Successfully Updated",
+          });
+        })
+        .catch((err) => {
+          res.status(400).json({
+            message: `Something Went Wrong \n ${err}`,
+          });
+          console.log(err);
+        });
+    }
+  }
+});
+
 //app.listen(3000, () => console.log(`Listening to port 3000...`));
 module.exports.handler = sls(app);
